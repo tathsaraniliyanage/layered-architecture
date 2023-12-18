@@ -1,8 +1,7 @@
 package com.example.layeredarchitecture.controller;
 
-import com.example.layeredarchitecture.DAO.CustomerDAO;
-import com.example.layeredarchitecture.DAO.CustomerDAOImpl;
-import com.example.layeredarchitecture.db.DBConnection;
+import com.example.layeredarchitecture.DAO.custom.CustomerDAO;
+import com.example.layeredarchitecture.DAO.custom.impl.CustomerDAOImpl;
 import com.example.layeredarchitecture.model.CustomerDTO;
 import com.example.layeredarchitecture.view.tdm.CustomerTM;
 import com.jfoenix.controls.JFXButton;
@@ -77,7 +76,7 @@ public class ManageCustomersFormController {
             ResultSet rst = stm.executeQuery("SELECT * FROM Customer");*/
 
             //CustomerDAO customerDAO = new CustomerDAOImpl();
-            ArrayList<CustomerDTO> allCustomer= customerDAO.getAllCustomer();
+            ArrayList<CustomerDTO> allCustomer= customerDAO.getAll();
             for(CustomerDTO dto: allCustomer){
                 tblCustomers.getItems().add(new CustomerTM(dto.getId(),dto.getName(),dto.getAddress()));
             }
@@ -162,7 +161,7 @@ public class ManageCustomersFormController {
                 pstm.executeUpdate();*/
 
              //   CustomerDAO customerDAO=new CustomerDAOImpl();
-                Boolean isSaved= customerDAO.saveCustomer(new CustomerDTO(id, name, address));
+                Boolean isSaved= customerDAO.save(new CustomerDTO(id, name, address));
 
                 //tblCustomers.getItems().add(new CustomerTM(id, name, address));
             } catch (SQLException e) {
@@ -187,7 +186,7 @@ public class ManageCustomersFormController {
 
              //   CustomerDAO customerDAO = new CustomerDAOImpl();
                // customerDAO.updateCustomer()
-                Boolean isUpdate= customerDAO.updateCustomer(new CustomerDTO(id, name, address));
+                Boolean isUpdate= customerDAO.update(new CustomerDTO(id, name, address));
 
             } catch (SQLException e) {
                 new Alert(Alert.AlertType.ERROR, "Failed to update the customer " + id + e.getMessage()).show();
@@ -212,7 +211,7 @@ public class ManageCustomersFormController {
         return pstm.executeQuery().next();*/
 
       //   CustomerDAO customerDAO =new CustomerDAOImpl();
-        return  customerDAO.existCustomer(id);
+        return  customerDAO.exsist(id);
     }
 
 
@@ -229,7 +228,7 @@ public class ManageCustomersFormController {
             pstm.executeUpdate();*/
 
             //CustomerDAO customerDAO=new CustomerDAOImpl();
-            customerDAO.deleteCustomer(id);
+            customerDAO.delete(id);
             //customerDAO.deleteCustomer(tblCustomers.getItems().remove(tblCustomers.getSelectionModel().getSelectedItem()));
 
        /*    tblCustomers.getItems().remove(tblCustomers.getSelectionModel().getSelectedItem());
@@ -256,7 +255,7 @@ public class ManageCustomersFormController {
             }*/
 
            // CustomerDAO customerDAO = new CustomerDAOImpl();  //loose coupling - meke customerDAOImpl wenuwt CustomerDAO demima  , ita passe property injection krnn mek udata genichcha
-            return customerDAO.genarateId();
+            return customerDAO.generateId();
 
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Failed to generate a new id " + e.getMessage()).show();

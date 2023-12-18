@@ -1,6 +1,13 @@
 package com.example.layeredarchitecture.controller;
 
-import com.example.layeredarchitecture.DAO.*;
+import com.example.layeredarchitecture.DAO.custom.CustomerDAO;
+import com.example.layeredarchitecture.DAO.custom.ItemDAO;
+import com.example.layeredarchitecture.DAO.custom.OrderDAO;
+import com.example.layeredarchitecture.DAO.custom.OrderDetailDAO;
+import com.example.layeredarchitecture.DAO.custom.impl.CustomerDAOImpl;
+import com.example.layeredarchitecture.DAO.custom.impl.ItemDAOImpl;
+import com.example.layeredarchitecture.DAO.custom.impl.OrderDAOImpl;
+import com.example.layeredarchitecture.DAO.custom.impl.OrderDetailDAOImpl;
 import com.example.layeredarchitecture.db.DBConnection;
 import com.example.layeredarchitecture.model.CustomerDTO;
 import com.example.layeredarchitecture.model.ItemDTO;
@@ -116,7 +123,7 @@ public class PlaceOrderFormController {
 
                         //Search Customer
                       //  CustomerDAO customerDAO = new CustomerDAOImpl();
-                        CustomerDTO customerDTO = customerDAO.searchCustomer(newValue + "");
+                        CustomerDTO customerDTO = customerDAO.search(newValue + "");
 
 
 
@@ -157,7 +164,7 @@ public class PlaceOrderFormController {
 
                     // item ekak search krna ek
                    // ItemDAO itemDAO = new ItemDAOImpl();
-                    ItemDTO item = itemDAO.findItem(newItemCode + "");
+                    ItemDTO item = itemDAO.search(newItemCode + "");
 
                     txtDescription.setText(item.getDescription());
                     txtUnitPrice.setText(item.getUnitPrice().setScale(2).toString());
@@ -208,7 +215,7 @@ public class PlaceOrderFormController {
         return pstm.executeQuery().next();*/
 
        // ItemDAO itemDAO =new ItemDAOImpl();
-        return  itemDAO.exsistItem(code);
+        return  itemDAO.exsist(code);
 
     }
 
@@ -219,7 +226,7 @@ public class PlaceOrderFormController {
         return pstm.executeQuery().next();*/
 
       //  CustomerDAO customerDAO =new CustomerDAOImpl();
-        return  customerDAO.existCustomer(id);
+        return  customerDAO.exsist(id);
     }
 
     public String generateNewOrderId() {
@@ -229,7 +236,7 @@ public class PlaceOrderFormController {
             ResultSet rst = stm.executeQuery("SELECT oid FROM `Orders` ORDER BY oid DESC LIMIT 1;"); */
 
             //OrderDAO orderDAO = new OrderDAOImpl();
-            return orderDAO.generateOID();
+            return orderDAO.generateId();
 
            // return rst.next() ? String.format("OID-%03d", (Integer.parseInt(rst.getString("oid").replace("OID-", "")) + 1)) : "OID-001";
         } catch (SQLException e) {
@@ -247,7 +254,7 @@ public class PlaceOrderFormController {
             ResultSet rst = stm.executeQuery("SELECT * FROM Customer");  */
 
            // CustomerDAO customerDAO = new CustomerDAOImpl();
-            ArrayList<CustomerDTO> allCustomers = customerDAO.getAllCustomer();
+            ArrayList<CustomerDTO> allCustomers = customerDAO.getAll();
             for (CustomerDTO c : allCustomers) {
                 cmbCustomerId.getItems().add(c.getId());
             }
@@ -272,7 +279,7 @@ public class PlaceOrderFormController {
             ResultSet rst = stm.executeQuery("SELECT * FROM Item");*/
 
             //ItemDAO itemDAO = new ItemDAOImpl();
-            ArrayList<ItemDTO> allItems = itemDAO.getAllITem();
+            ArrayList<ItemDTO> allItems = itemDAO.getAll();
             for (ItemDTO i : allItems) {
                 cmbItemCode.getItems().add(i.getCode());
             }
@@ -383,7 +390,7 @@ public class PlaceOrderFormController {
 
 
           //  OrderDAO orderDAO = new OrderDAOImpl();
-            boolean isSaved = orderDAO.existOrder(orderId);
+            boolean isSaved = orderDAO.exsist(orderId);
             if (isSaved) {
                 return false;
             }
@@ -397,7 +404,7 @@ public class PlaceOrderFormController {
 
             //order table ekt order ek save kirima
            // OrderDAO orderDAO1= new OrderDAOImpl();
-            boolean save = orderDAO.saveOrder(new OrderDTO(orderId, orderDate, customerId));
+            boolean save = orderDAO.save(new OrderDTO(orderId, orderDate, customerId));
 
            /* stm = connection.prepareStatement("INSERT INTO `Orders` (oid, date, customerID) VALUES (?,?,?)");
             stm.setString(1, orderId);
@@ -420,7 +427,7 @@ public class PlaceOrderFormController {
                          // order detail table ekt data add kirima
           //  OrderDetailDAO orderDetailDAO = new OrderDetailDAOImpl();
             for (OrderDetailDTO detail : orderDetails) {
-                boolean add = orderDetailDAO.saveOrderDetail(detail);
+                boolean add = orderDetailDAO.save(detail);
 
             /*stm = connection.prepareStatement("INSERT INTO OrderDetails (oid, itemCode, unitPrice, qty) VALUES (?,?,?,?)");
 
@@ -456,7 +463,7 @@ public class PlaceOrderFormController {
                 pstm.setString(4, item.getCode()); */
 
             //    ItemDAO itemDAO = new ItemDAOImpl();
-                boolean isUpdated = itemDAO.updateItem(item);
+                boolean isUpdated = itemDAO.update(item);
 
                if (!(isUpdated)) {
                    connection.rollback();
@@ -489,7 +496,7 @@ public class PlaceOrderFormController {
             //rst.next();
 
            // ItemDAO itemDAO = new ItemDAOImpl();
-            return itemDAO.findItem(code);
+            return itemDAO.search(code);
 
           //  return new ItemDTO(code, rst.getString("description"), rst.getBigDecimal("unitPrice"), rst.getInt("qtyOnHand"));
         } catch (SQLException e) {
