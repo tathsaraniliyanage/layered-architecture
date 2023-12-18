@@ -382,8 +382,6 @@ public class PlaceOrderFormController {
             /*if order id already exist*/
 
 
-            //order id ek tynwd kiyl blima
-
           //  OrderDAO orderDAO = new OrderDAOImpl();
             boolean isSaved = orderDAO.existOrder(orderId);
             if (isSaved) {
@@ -397,7 +395,7 @@ public class PlaceOrderFormController {
             connection.setAutoCommit(false);
 
 
-                          //order table ekt order ek save kirima
+            //order table ekt order ek save kirima
            // OrderDAO orderDAO1= new OrderDAOImpl();
             boolean save = orderDAO.saveOrder(new OrderDTO(orderId, orderDate, customerId));
 

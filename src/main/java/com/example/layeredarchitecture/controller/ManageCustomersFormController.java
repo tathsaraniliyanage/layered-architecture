@@ -242,7 +242,6 @@ public class ManageCustomersFormController {
             e.printStackTrace();
         }
     }
-
     private String generateNewId() {
         try {
            /* Connection connection = DBConnection.getDbConnection().getConnection();
